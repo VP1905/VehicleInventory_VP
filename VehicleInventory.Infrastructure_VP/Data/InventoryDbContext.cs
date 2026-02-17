@@ -22,24 +22,22 @@ namespace VehicleInventory.Infrastructure_VP.Data
 
                 entity.HasKey(v => v.Id);
 
-                entity.Property(v => v.Make)
-                      .IsRequired()
-                      .HasMaxLength(50);
+                entity.Property(v => v.VehicleCode)
+                       .IsRequired()
+                       .HasMaxLength(50);
 
-                entity.Property(v => v.Model)
-                      .IsRequired()
-                      .HasMaxLength(50);
+                entity.Property(v => v.LocationId)
+                     .IsRequired();
 
                 entity.Property(v => v.VehicleType)
                       .HasConversion<int>()
-                      .HasColumnName("VehicleTypeId");
+                      .IsRequired();
 
                 entity.Property(v => v.Status)
                       .HasConversion<int>()
-                      .HasColumnName("VehicleStatusId");
+                      .IsRequired();
 
-                entity.Property(v => v.LocationId)
-                      .HasColumnName("VehicleLocationId");
+               
             });
         }
     }

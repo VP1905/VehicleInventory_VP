@@ -23,10 +23,9 @@ namespace VehicleInventory.Application_VP.Services
         public async Task<int> CreateVehicleAsync(CreateVehicleDto dto)
         {
             var vehicle = new Vehicle(
-                dto.Make,
-                dto.Model,
-                (VehicleType)dto.VehicleTypeId,
-                dto.LocationId);
+                dto.VehicleCode,
+                dto.LocationId,
+                (VehicleType)dto.VehicleTypeId);
 
             await _repository.AddAsync(vehicle);
             await _repository.SaveChangesAsync();
@@ -66,7 +65,7 @@ namespace VehicleInventory.Application_VP.Services
                     vehicle.MarkRented();
                     break;
                 case VehicleStatus.Maintenance:
-                    vehicle.SendToMaintenance();
+                    vehicle.MarkServiced();
                     break;
             }
 
@@ -88,12 +87,16 @@ namespace VehicleInventory.Application_VP.Services
             return new VehicleDto
             {
                 Id = vehicle.Id,
-                Make = vehicle.Make,
-                Model = vehicle.Model,
+                VehicleCode = vehicle.VehicleCode,
                 VehicleType = vehicle.VehicleType,
                 LocationId = vehicle.LocationId,
                 Status = vehicle.Status
             };
+        }
+
+        public async Task<object?> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

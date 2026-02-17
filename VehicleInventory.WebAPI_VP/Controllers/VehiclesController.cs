@@ -19,7 +19,7 @@ namespace VehicleInventory.WebAPI_VP.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllVehicles()
         {
-            return Ok(await _vehicleService.GetAllAsync());
+            return Ok(await _vehicleService.GetAllVehiclesAsync());
         }
 
         // GET /api/vehicles/{id}

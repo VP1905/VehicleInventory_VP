@@ -10,10 +10,9 @@ namespace VehicleInventory.Application_VP.DTOs
     public class VehicleDto
     {
         public int Id { get; set; }
-        public string Make { get; set; } = string.Empty;
-        public string Model { get; set; } = string.Empty;
+        public string VehicleCode { get; set; } = string.Empty;
         public int LocationId { get; set; }
-        public VehicleStatus Status { get; set; }
         public VehicleType VehicleType { get; set; }
+        public VehicleStatus Status { get; set; }
     }
 }
