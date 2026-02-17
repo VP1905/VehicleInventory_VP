@@ -10,6 +10,7 @@ using VehicleInventory.Domain_VP.Entites;
 
 namespace VehicleInventory.Application_VP.Services
 {
+    //Handles business logic related to vehicles.
     public class VehicleService
     {
         private readonly IVehicleRepository _repository;
@@ -19,7 +20,7 @@ namespace VehicleInventory.Application_VP.Services
             _repository = repository;
         }
 
-        // CREATE
+        // CREATE a new vehicle using data provided in the DTO.
         public async Task<int> CreateVehicleAsync(CreateVehicleDto dto)
         {
             var vehicle = new Vehicle(
@@ -33,21 +34,21 @@ namespace VehicleInventory.Application_VP.Services
             return vehicle.Id;
         }
 
-        // READ (ALL)
+        // READ (ALL) or retrives all the vehicles and maps them to DTOs.
         public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
         {
             var vehicles = await _repository.GetAllAsync();
             return vehicles.Select(MapToDto);
         }
 
-        // READ (BY ID)
+        // READ Vehicle by its ID.
         public async Task<VehicleDto?> GetVehicleByIdAsync(int id)
         {
             var vehicle = await _repository.GetByIdAsync(id);
             return vehicle == null ? null : MapToDto(vehicle);
         }
 
-        // UPDATE STATUS
+        // UPDATE the status of a vehicle.
         public async Task UpdateVehicleStatusAsync(int id, VehicleStatus status)
         {
             var vehicle = await _repository.GetByIdAsync(id)
@@ -72,7 +73,7 @@ namespace VehicleInventory.Application_VP.Services
             await _repository.SaveChangesAsync();
         }
 
-        // DELETE
+        // DELETE a vehicle by its ID.
         public async Task DeleteVehicleAsync(int id)
         {
             var vehicle = await _repository.GetByIdAsync(id)
@@ -82,6 +83,7 @@ namespace VehicleInventory.Application_VP.Services
             await _repository.SaveChangesAsync();
         }
 
+        // Converts a Vehicle domain entity into a VehicleDto.
         private static VehicleDto MapToDto(Vehicle vehicle)
         {
             return new VehicleDto
@@ -92,11 +94,6 @@ namespace VehicleInventory.Application_VP.Services
                 LocationId = vehicle.LocationId,
                 Status = vehicle.Status.ToString()
             };
-        }
-
-        public async Task<object?> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace VehicleInventory.Application_VP.Interfaces
 {
     public interface IVehicleRepository
     {
+        //Define the contract for vehicle data access operations.
         Task AddAsync(Vehicle vehicle);
         Task<Vehicle?> GetByIdAsync(int id);
         Task<IEnumerable<Vehicle>> GetAllAsync();

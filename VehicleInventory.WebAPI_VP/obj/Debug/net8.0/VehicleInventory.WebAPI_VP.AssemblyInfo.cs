@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VehicleInventory.WebAPI_VP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c9621c171740980bc93a549056b82f6aedb44a8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+778b4db0fd3be5e4b51be45a56b42d3a625b5702")]
 [assembly: System.Reflection.AssemblyProductAttribute("VehicleInventory.WebAPI_VP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VehicleInventory.WebAPI_VP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
