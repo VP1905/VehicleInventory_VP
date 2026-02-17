@@ -13,5 +13,4 @@ namespace VehicleInventory.Domain_VP.Domain.Enums
         Rented = 3,
         Maintenance = 4
     }
-
 }
