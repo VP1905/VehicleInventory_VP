@@ -33,7 +33,7 @@ namespace VehicleInventory.Domain_VP.Entites
         public void MarkAvailable()
         {
             if (Status == VehicleStatus.Reserved)
-                throw new InvalidOperationException("Reserved vehicle cannot be made available directly.");
+                throw new DomainException("Reserved vehicle cannot be made available directly.");
 
             Status = VehicleStatus.Available;
         }
@@ -42,7 +42,7 @@ namespace VehicleInventory.Domain_VP.Entites
         public void MarkRented()
         {
             if (Status != VehicleStatus.Available)
-                throw new InvalidOperationException("Only available vehicles can be rented.");
+                throw new DomainException("Only available vehicles can be rented.");
 
             Status = VehicleStatus.Rented;
         }
@@ -51,7 +51,7 @@ namespace VehicleInventory.Domain_VP.Entites
         public void MarkReserved()
         {
             if (Status != VehicleStatus.Available)
-                throw new InvalidOperationException("Only available vehicles can be reserved.");
+                throw new DomainException("Only available vehicles can be reserved.");
 
             Status = VehicleStatus.Reserved;
         }
