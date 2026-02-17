@@ -7,6 +7,7 @@ using VehicleInventory.Domain_VP.Domain.Enums;
 
 namespace VehicleInventory.Application_VP.DTOs
 {
+    // Data Transfer Object used to update the status of an existing vehicle.
     public class UpdateVehicleStatusDto
     {
         public VehicleStatus Status { get; set; }

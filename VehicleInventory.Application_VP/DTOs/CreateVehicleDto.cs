@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace VehicleInventory.Application_VP.DTOs
 {
+    //Data Transfer Object used when creating a new vehicle.
     public class CreateVehicleDto
     {
         public string VehicleCode { get; set; } = string.Empty;
