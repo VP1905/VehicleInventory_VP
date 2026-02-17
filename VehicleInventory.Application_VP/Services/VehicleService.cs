@@ -88,9 +88,9 @@ namespace VehicleInventory.Application_VP.Services
             {
                 Id = vehicle.Id,
                 VehicleCode = vehicle.VehicleCode,
-                VehicleType = vehicle.VehicleType,
+                VehicleType = vehicle.VehicleType.ToString(),
                 LocationId = vehicle.LocationId,
-                Status = vehicle.Status
+                Status = vehicle.Status.ToString()
             };
         }
 

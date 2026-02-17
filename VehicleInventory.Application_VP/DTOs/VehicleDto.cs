@@ -12,7 +12,7 @@ namespace VehicleInventory.Application_VP.DTOs
         public int Id { get; set; }
         public string VehicleCode { get; set; } = string.Empty;
         public int LocationId { get; set; }
-        public VehicleType VehicleType { get; set; }
-        public VehicleStatus Status { get; set; }
+        public string VehicleType { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }
