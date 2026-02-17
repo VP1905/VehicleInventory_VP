@@ -34,5 +34,9 @@ namespace VehicleInventory.Infrastructure_VP.Repositories
         {
             _dbContext.Vehicles.Remove(vehicle);
         }
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
