@@ -13,7 +13,7 @@ namespace VehicleInventory.Application_VP
         public static IServiceCollection AddApplication(
              this IServiceCollection services)
         {
-            // Register application services (use cases)
+            // Register application services
             services.AddScoped<VehicleService>();
 
             return services;
