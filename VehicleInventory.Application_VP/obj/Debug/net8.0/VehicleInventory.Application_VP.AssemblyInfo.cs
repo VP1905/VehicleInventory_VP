@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VehicleInventory.Application_VP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+778b4db0fd3be5e4b51be45a56b42d3a625b5702")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+46b733e3c184437809a32b8476beef408a72374f")]
 [assembly: System.Reflection.AssemblyProductAttribute("VehicleInventory.Application_VP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VehicleInventory.Application_VP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
