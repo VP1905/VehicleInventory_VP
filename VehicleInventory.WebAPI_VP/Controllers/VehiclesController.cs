@@ -26,14 +26,14 @@ namespace VehicleInventory.WebAPI_VP.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicleById(int id)
         {
-            return Ok(await _vehicleService.GetByIdAsync(id));
+            return Ok(await _vehicleService.GetVehicleByIdAsync(id));
         }
 
         // POST /api/vehicles
         [HttpPost]
         public async Task<IActionResult> CreateVehicle(CreateVehicleDto dto)
         {
-            await _vehicleService.CreateAsync(dto);
+            await _vehicleService.CreateVehicleAsync(dto);
             return Ok();
         }
 
@@ -43,7 +43,7 @@ namespace VehicleInventory.WebAPI_VP.Controllers
             int id,
             UpdateVehicleStatusDto dto)
         {
-            await _vehicleService.UpdateStatusAsync(id, dto.Status);
+            await _vehicleService.UpdateVehicleStatusAsync(id, dto.Status);
             return NoContent();
         }
 
@@ -51,7 +51,7 @@ namespace VehicleInventory.WebAPI_VP.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            await _vehicleService.DeleteAsync(id);
+            await _vehicleService.DeleteVehicleAsync(id);
             return NoContent();
         }
     }
