@@ -8,9 +8,9 @@ using VehicleInventory.Domain_VP.Entites;
 
 namespace VehicleInventory.Infrastructure_VP.Data
 {
-    public class VehicleInventoryDbContext : DbContext
+    public class InventoryDbContext : DbContext
     {
-        public VehicleInventoryDbContext(DbContextOptions<VehicleInventoryDbContext> options) : base(options) { }
+        public InventoryDbContext(DbContextOptions<InventoryDbContext> options) : base(options) { }
 
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
 
