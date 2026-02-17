@@ -8,6 +8,7 @@ using VehicleInventory.Application_VP.Services;
 
 namespace VehicleInventory.Application_VP
 {
+    // Centralized dependency injection configuration for the Application layer.
     public static class DependencyInjection
     {
         public static IServiceCollection AddApplication(
@@ -15,7 +16,6 @@ namespace VehicleInventory.Application_VP
         {
             // Register application services
             services.AddScoped<VehicleService>();
-
             return services;
         }
     }

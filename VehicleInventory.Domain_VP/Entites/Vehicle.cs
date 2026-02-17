@@ -8,6 +8,7 @@ using VehicleInventory.Domain_VP.Exceptions;
 
 namespace VehicleInventory.Domain_VP.Entites
 {
+    // Vehicle is the core aggregate root of the Inventory bounded context.
     public class Vehicle
     {
         public int Id { get; private set; }
@@ -16,8 +17,10 @@ namespace VehicleInventory.Domain_VP.Entites
         public VehicleType VehicleType { get; private set; }
         public VehicleStatus Status { get; private set; }
 
-        private Vehicle() { } // EF Core
+        // Private parameterless constructor required by EF Core
+        private Vehicle() { }
 
+        // Creates a new vehicle with the required business properties.
         public Vehicle(string vehicleCode, int locationId, VehicleType vehicleType)
         {
             VehicleCode = vehicleCode;
@@ -26,6 +29,7 @@ namespace VehicleInventory.Domain_VP.Entites
             Status = VehicleStatus.Available;
         }
 
+        // Marks the vehicle as available.
         public void MarkAvailable()
         {
             if (Status == VehicleStatus.Reserved)
@@ -34,6 +38,7 @@ namespace VehicleInventory.Domain_VP.Entites
             Status = VehicleStatus.Available;
         }
 
+        // Marks the vehicle as rented.
         public void MarkRented()
         {
             if (Status != VehicleStatus.Available)
@@ -42,6 +47,7 @@ namespace VehicleInventory.Domain_VP.Entites
             Status = VehicleStatus.Rented;
         }
 
+        // Marks the vehicle as reserved.
         public void MarkReserved()
         {
             if (Status != VehicleStatus.Available)
@@ -50,6 +56,7 @@ namespace VehicleInventory.Domain_VP.Entites
             Status = VehicleStatus.Reserved;
         }
 
+        // Marks the vehicle as under maintenance.
         public void MarkServiced()
         {
             Status = VehicleStatus.Maintenance;
