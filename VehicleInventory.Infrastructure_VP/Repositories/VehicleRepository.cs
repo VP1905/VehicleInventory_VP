@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VehicleInventory.Application_VP.Interfaces;
-using VehicleInventory.Domain_VP.Entites;
+using VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate;
 using VehicleInventory.Infrastructure_VP.Data;
 
 namespace VehicleInventory.Infrastructure_VP.Repositories
@@ -13,39 +13,48 @@ namespace VehicleInventory.Infrastructure_VP.Repositories
     // This class belongs to the Infrastructure layer and is responsible
     // only for data access logic. It does NOT contain any business rules
     // or domain logic.
-    public class VehicleRepository: IVehicleRepository
+    public class VehicleRepository : IVehicleRepository
     {
-        // Injects the InventoryDbContext for database access.
-        private readonly InventoryDbContext _dbContext;
+        private readonly InventoryDbContext _context;
 
         public VehicleRepository(InventoryDbContext context)
         {
-            _dbContext = context;
+            _context = context;
         }
-        // Adds a new Vehicle aggregate to the database context.
-        public async Task AddAsync(Vehicle vehicle)
+
+        public Vehicle Add(Vehicle vehicle)
         {
-            await _dbContext.Vehicles.AddAsync(vehicle);
+            return _context.Vehicles.Add(vehicle).Entity;
         }
-        // Retrieves all vehicles from the database.
+
+        public Vehicle Update(Vehicle vehicle)
+        {
+            return _context.Vehicles.Update(vehicle).Entity;
+        }
+
+        public async Task<Vehicle?> FindByIdAsync(int id)
+        {
+            return await _context.Vehicles
+                .Include(v => v.Inventory)
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task<IEnumerable<Vehicle>> GetAllAsync()
         {
-            return await _dbContext.Vehicles.AsNoTracking().ToListAsync();
+            return await _context.Vehicles
+                .Include(v => v.Inventory)
+                .OrderBy(v => v.Id)
+                .ToListAsync();
         }
-        // Retrieves a single Vehicle aggregate by its id.
-        public async Task<Vehicle> GetByIdAsync(int id)
+
+        public void Delete(Vehicle vehicle)
         {
-            return await _dbContext.Vehicles.FindAsync(id);
+            _context.Vehicles.Remove(vehicle);
         }
-        // Removes a Vehicle aggregate from the database context.
-        public async Task DeleteAsync(Vehicle vehicle)
-        {
-            _dbContext.Vehicles.Remove(vehicle);
-        }
-        // Save changes in the database
+
         public async Task SaveChangesAsync()
         {
-            await _dbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

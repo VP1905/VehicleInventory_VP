@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 using VehicleInventory.Application_VP.Interfaces;
 using VehicleInventory.Infrastructure_VP.Data;
+using VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate;
 using VehicleInventory.Infrastructure_VP.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace VehicleInventory.Infrastructure_VP
 {
@@ -11,19 +13,16 @@ namespace VehicleInventory.Infrastructure_VP
     {
         //Registers database context and repository implementations
         //The IServiceCollection used to resigster application services.
-        public static IServiceCollection AddInfrastruture(
-            this IServiceCollection services,
-            string connectionString)
+        public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
         {
-            //Configured to use SQL Server with the provided connection string
-            services.AddDbContext<InventoryDbContext>(options => options.UseSqlServer(connectionString));
-            
-            //Register the Vehicle repository
+            services.AddDbContext<InventoryDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped<IVehicleRepository, VehicleRepository>();
-            
-            //Return the service collection
+
             return services;
         }
-
     }
 }

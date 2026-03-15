@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VehicleInventory.Domain_VP.Domain.Enums;
+using VehicleInventory.Domain_VP.AggregatesModel;
 
 namespace VehicleInventory.Application_VP.DTOs
 {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VehicleInventory.Domain_VP.Domain.Enums;
+
 
 namespace VehicleInventory.Application_VP.DTOs
 {
@@ -12,6 +12,6 @@ namespace VehicleInventory.Application_VP.DTOs
     public class UpdateVehicleStatusDto
     {
         [Required]
-        public VehicleStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }

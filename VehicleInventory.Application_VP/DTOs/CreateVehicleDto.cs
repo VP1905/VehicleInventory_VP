@@ -12,12 +12,13 @@ namespace VehicleInventory.Application_VP.DTOs
     public class CreateVehicleDto
     {
         [Required]
+        [MaxLength(20)]
         public string VehicleCode { get; set; } = string.Empty;
 
-        [Required]
-        public int VehicleTypeId { get; set; }
+        [Range(1, int.MaxValue)]
+        public int LocationId { get; set; }
 
         [Required]
-        public int LocationId { get; set; }
+        public string VehicleType { get; set; } = string.Empty;
     }
 }

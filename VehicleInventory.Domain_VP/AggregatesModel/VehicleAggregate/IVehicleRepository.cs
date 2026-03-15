@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate
 {
-    internal class IVehicleRepository
+    public interface IVehicleRepository : IRepository<Vehicle>
     {
+        Vehicle Add(Vehicle vehicle);
+        Vehicle Update(Vehicle vehicle);
+        Task<Vehicle?> FindByIdAsync(int id);
+        Task<IEnumerable<Vehicle>> GetAllAsync();
+        void Delete(Vehicle vehicle);
     }
 }

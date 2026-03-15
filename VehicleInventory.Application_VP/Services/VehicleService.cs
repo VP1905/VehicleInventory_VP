@@ -1,60 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VehicleInventory.Application_VP.DTOs;
+﻿using VehicleInventory.Application_VP.DTOs;
 using VehicleInventory.Application_VP.Interfaces;
-using VehicleInventory.Domain_VP.Domain.Enums;
-using VehicleInventory.Domain_VP.Entites;
+using VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate;
 
 namespace VehicleInventory.Application_VP.Services
 {
-    //Handles business logic related to vehicles.
-    public class VehicleService
+    // Handles business logic related to vehicles.
+    public class VehicleService : IVehicleService
     {
-        private readonly IVehicleRepository _repository;
+        private readonly IVehicleRepository _vehicleRepository;
 
-        public VehicleService(IVehicleRepository repository)
+        public VehicleService(IVehicleRepository vehicleRepository)
         {
-            _repository = repository;
+            _vehicleRepository = vehicleRepository;
         }
 
-        // CREATE a new vehicle using data provided in the DTO.
-        public async Task<int> CreateVehicleAsync(CreateVehicleDto dto)
+        public async Task<VehicleDto> CreateVehicleAsync(CreateVehicleDto dto)
         {
+            if (!Enum.TryParse<VehicleType>(dto.VehicleType, true, out var vehicleType))
+                throw new ArgumentException("Invalid vehicle type.");
+
             var vehicle = new Vehicle(
-                dto.VehicleCode,
-                dto.LocationId,
-                (VehicleType)dto.VehicleTypeId);
+                new VehicleCode(dto.VehicleCode),
+                vehicleType,
+                new LocationId(dto.LocationId));
 
-            await _repository.AddAsync(vehicle);
-            await _repository.SaveChangesAsync();
+            _vehicleRepository.Add(vehicle);
+            await _vehicleRepository.SaveChangesAsync();
 
-            return vehicle.Id;
+            return Map(vehicle);
         }
 
-        // READ (ALL) or retrives all the vehicles and maps them to DTOs.
-        public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
-        {
-            var vehicles = await _repository.GetAllAsync();
-            return vehicles.Select(MapToDto);
-        }
-
-        // READ Vehicle by its ID.
         public async Task<VehicleDto?> GetVehicleByIdAsync(int id)
         {
-            var vehicle = await _repository.GetByIdAsync(id);
-            return vehicle == null ? null : MapToDto(vehicle);
+            var vehicle = await _vehicleRepository.FindByIdAsync(id);
+            return vehicle is null ? null : Map(vehicle);
         }
 
-        // UPDATE the status of a vehicle.
-        public async Task UpdateVehicleStatusAsync(int id, VehicleStatus status)
+        public async Task<List<VehicleDto>> GetAllVehiclesAsync()
         {
-            var vehicle = await _repository.GetByIdAsync(id)
-                ?? throw new Exception("Vehicle not found");
+            var vehicles = await _vehicleRepository.GetAllAsync();
+            return vehicles.Select(Map).ToList();
+        }
 
-            switch (status)
+        public async Task<bool> UpdateVehicleStatusAsync(int id, UpdateVehicleStatusDto dto)
+        {
+            var vehicle = await _vehicleRepository.FindByIdAsync(id);
+            if (vehicle is null)
+                return false;
+
+            if (!Enum.TryParse<VehicleStatus>(dto.Status, true, out var newStatus))
+                throw new ArgumentException("Invalid vehicle status.");
+
+            switch (newStatus)
             {
                 case VehicleStatus.Available:
                     vehicle.MarkAvailable();
@@ -65,34 +62,38 @@ namespace VehicleInventory.Application_VP.Services
                 case VehicleStatus.Rented:
                     vehicle.MarkRented();
                     break;
-                case VehicleStatus.Maintenance:
+                case VehicleStatus.UnderService:
                     vehicle.MarkServiced();
                     break;
+                default:
+                    throw new ArgumentException("Unsupported vehicle status.");
             }
 
-            await _repository.SaveChangesAsync();
+            _vehicleRepository.Update(vehicle);
+            await _vehicleRepository.SaveChangesAsync();
+            return true;
         }
 
-        // DELETE a vehicle by its ID.
-        public async Task DeleteVehicleAsync(int id)
+        public async Task<bool> DeleteVehicleAsync(int id)
         {
-            var vehicle = await _repository.GetByIdAsync(id)
-                ?? throw new Exception("Vehicle not found");
+            var vehicle = await _vehicleRepository.FindByIdAsync(id);
+            if (vehicle is null)
+                return false;
 
-            await _repository.DeleteAsync(vehicle);
-            await _repository.SaveChangesAsync();
+            _vehicleRepository.Delete(vehicle);
+            await _vehicleRepository.SaveChangesAsync();
+            return true;
         }
 
-        // Converts a Vehicle domain entity into a VehicleDto.
-        private static VehicleDto MapToDto(Vehicle vehicle)
+        private static VehicleDto Map(Vehicle vehicle)
         {
             return new VehicleDto
             {
                 Id = vehicle.Id,
-                VehicleCode = vehicle.VehicleCode,
+                VehicleCode = vehicle.VehicleCode.Value,
+                LocationId = vehicle.Inventory.LocationId.Value,
                 VehicleType = vehicle.VehicleType.ToString(),
-                LocationId = vehicle.LocationId,
-                Status = vehicle.Status.ToString()
+                Status = vehicle.Inventory.Status.ToString()
             };
         }
     }

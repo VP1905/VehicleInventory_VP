@@ -1,57 +1,73 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VehicleInventory.Application_VP.Services;
 using VehicleInventory.Application_VP.DTOs;
+using VehicleInventory.Application_VP.Interfaces;
 
 namespace VehicleInventory.WebAPI_VP.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class VehiclesController : ControllerBase
     {
-        //Register Application service in the controller
-        private readonly VehicleService _vehicleService;
+        private readonly IVehicleService _vehicleService;
 
-        public VehiclesController(VehicleService vehicleService)
+        public VehiclesController(IVehicleService vehicleService)
         {
             _vehicleService = vehicleService;
         }
-        // GET /api/vehicles
+
         [HttpGet]
-        public async Task<IActionResult> GetAllVehicles()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(await _vehicleService.GetAllVehiclesAsync());
+            var vehicles = await _vehicleService.GetAllVehiclesAsync();
+            return Ok(vehicles);
         }
 
-        // GET /api/vehicles/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetVehicleById(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await _vehicleService.GetVehicleByIdAsync(id));
+            var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
+
+            if (vehicle == null)
+                return NotFound(new { message = $"Vehicle with ID {id} was not found." });
+
+            return Ok(vehicle);
         }
 
-        // POST /api/vehicles
         [HttpPost]
-        public async Task<IActionResult> CreateVehicle(CreateVehicleDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateVehicleDto dto)
         {
-            await _vehicleService.CreateVehicleAsync(dto);
-            return Ok();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdVehicle = await _vehicleService.CreateVehicleAsync(dto);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdVehicle.Id }, createdVehicle);
         }
 
-        // PUT /api/vehicles/{id}/status
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateVehicleStatus(
-            int id,
-            UpdateVehicleStatusDto dto)
+        [HttpPut("{id:int}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateVehicleStatusDto dto)
         {
-            await _vehicleService.UpdateVehicleStatusAsync(id, dto.Status);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existingVehicle = await _vehicleService.GetVehicleByIdAsync(id);
+            if (existingVehicle == null)
+                return NotFound(new { message = $"Vehicle with ID {id} was not found." });
+
+            await _vehicleService.UpdateVehicleStatusAsync(id, dto);
+
             return NoContent();
         }
 
-        // DELETE /api/vehicles/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVehicle(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
+            var existingVehicle = await _vehicleService.GetVehicleByIdAsync(id);
+            if (existingVehicle == null)
+                return NotFound(new { message = $"Vehicle with ID {id} was not found." });
+
             await _vehicleService.DeleteVehicleAsync(id);
+
             return NoContent();
         }
     }

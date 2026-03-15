@@ -4,48 +4,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VehicleInventory.Domain_VP.Entites;
+using VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate;
 
 namespace VehicleInventory.Infrastructure_VP.Data
 {
     // This class is responsible for database access
     public class InventoryDbContext : DbContext
     {
-        // Creates a new instance of InventoryDbContext using the provided database configuration options.
-        public InventoryDbContext(DbContextOptions<InventoryDbContext> options) : base(options) { }
+        public InventoryDbContext(DbContextOptions<InventoryDbContext> options)
+            : base(options)
+        {
+        }
 
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+        public DbSet<Inventory> Inventories => Set<Inventory>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Vehicle>(entity =>
             {
-                // Map Vehicle aggregate to VP_Vehicle table
-                entity.ToTable("VP_Vehicle");
+                entity.ToTable("Vehicles");
 
-                // Configure primary key
                 entity.HasKey(v => v.Id);
 
-                // VehicleCode is required and has a max length
-                entity.Property(v => v.VehicleCode)
-                       .IsRequired()
-                       .HasMaxLength(50);
+                entity.OwnsOne(v => v.VehicleCode, code =>
+                {
+                    code.Property(c => c.Value)
+                        .HasColumnName("VehicleCode")
+                        .HasMaxLength(20)
+                        .IsRequired();
+                });
 
-                // Location identifier
-                entity.Property(v => v.LocationId)
-                     .IsRequired();
-
-                // Store VehicleType enum as an integer in the database
                 entity.Property(v => v.VehicleType)
-                      .HasConversion<int>()
-                      .IsRequired();
+                    .HasConversion<string>()
+                    .HasMaxLength(30)
+                    .IsRequired();
 
-                // Store VehicleStatus enum as an integer in the database
-                entity.Property(v => v.Status)
-                      .HasConversion<int>()
-                      .IsRequired();
+                entity.HasOne(v => v.Inventory)
+                    .WithOne()
+                    .HasForeignKey<Inventory>(i => i.VehicleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
-               
+            modelBuilder.Entity<Inventory>(entity =>
+            {
+                entity.ToTable("Inventories");
+
+                entity.HasKey(i => i.Id);
+
+                entity.OwnsOne(i => i.LocationId, location =>
+                {
+                    location.Property(l => l.Value)
+                        .HasColumnName("LocationId")
+                        .IsRequired();
+                });
+
+                entity.Property(i => i.Status)
+                    .HasConversion<string>()
+                    .HasMaxLength(30)
+                    .IsRequired();
             });
         }
     }
