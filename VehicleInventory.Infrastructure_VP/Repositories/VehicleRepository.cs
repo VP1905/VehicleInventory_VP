@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VehicleInventory.Application_VP.Interfaces;
 using VehicleInventory.Domain_VP.AggregatesModel.VehicleAggregate;
 using VehicleInventory.Infrastructure_VP.Data;
-
+    
 namespace VehicleInventory.Infrastructure_VP.Repositories
 {
     // This class belongs to the Infrastructure layer and is responsible
